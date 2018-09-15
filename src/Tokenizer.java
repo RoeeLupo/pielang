@@ -2,14 +2,18 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import Tokens.*;
+
+import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.zip.Adler32;
+import java.util.regex.Pattern;
 
 public class Tokenizer {
     private Character[] separators = {'{', '}', ';', '(', ')', '|', '+', '*', '/', '-', '>', '~'}, ws = {' ', '\t', '\n'};
     private String[] commands = {"loop"};
+    private static boolean enableComments = true, enableNoise = false;
 
-    private String ReadFile(String filePath){
+    public static String ReadFile(String filePath){
         StringBuilder contentBuilder = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath)))
         {
@@ -27,18 +31,32 @@ public class Tokenizer {
         return contentBuilder.toString();
     }
 
+    public static void WriteFile(String filepath, String text){
+        try {
+            PrintWriter out = new PrintWriter(filepath);
+            out.println(text);
+            out.close();
+        } catch (Exception ignored){
+
+        }
+
+    }
+
     private Token[] Tokens(String s){
         LinkedList<Token> tokens = new LinkedList<>();
         int start = 0;
         int i = 0;
         char startedText = ' ';
+        char startedComment = ' ';
         boolean startedPure = false;
+        boolean donttokenize = false;
         while(i < s.length()){
-            if(!startedPure && startedText == ' ') {
+            if(!donttokenize) {
                 if (in(s.charAt(i), separators)) {
                     if(s.charAt(i) == '{' && tokens.getLast().GetData().equals('~')) {
                         tokens.removeLast();
                         startedPure = true;
+                        donttokenize = true;
                         i++;
                         start = i;
                         continue;
@@ -55,19 +73,66 @@ public class Tokenizer {
                     if (start != i)
                         tokens.add(GenerateToken(s.substring(start, i)));
                     startedText = s.charAt(i);
+                    donttokenize = true;
+                } else if(s.charAt(i) == '#'){
+                    if(s.charAt(i+1) == '{'){
+                        startedComment = '}';
+                        donttokenize = true;
+                        if (start != i && enableComments) {
+                            tokens.add(GenerateToken(s.substring(start, i)));
+                            tokens.add(new SeparatorToken(';'));
+                        }
+                        start = i + 2;
+                    } else {
+                        startedComment = '\n';
+                        donttokenize = true;
+                        if (start != i && !enableComments) {
+                            tokens.add(GenerateToken(s.substring(start, i)));
+                            tokens.add(new SeparatorToken(';'));
+                        }
+                        start = i;
+                    }
                 }
             } else {
                 if(startedText != ' ') {
                     if (s.charAt(i) == startedText) {
                         tokens.add(new TextToken(s.substring(start, i + 1)));
                         startedText = ' ';
+                        donttokenize = false;
                         start = i + 1;
                     }
-                } else {
+                } else if(startedPure){
                     if (s.charAt(i) == '}') {
                         tokens.add(new TextToken(s.substring(start, i)));
                         startedPure = false;
+                        donttokenize = false;
                         start = i + 1;
+                    }
+                } else if(startedComment != ' '){
+                    if(s.charAt(i) == '\n'){
+                        if(startedComment == '\n'){
+                            if(enableComments) {
+                                tokens.add(new TextToken(s.substring(start, i)));
+                                tokens.add(new SeparatorToken(';'));
+                            }
+                            donttokenize = false;
+                            startedComment = ' ';
+                            start = i+1;
+                        } else {
+                            if(enableComments) {
+                                tokens.add(new TextToken("#" + s.substring(start, i)));
+                                tokens.add(new SeparatorToken(';'));
+                            }
+                            start = i+1;
+                        }
+                    } else if (s.charAt(i) == '}'){
+                        if(start != i && enableComments){
+                            tokens.add(new TextToken("#" + s.substring(start, i)));
+                            tokens.add(new SeparatorToken(';'));
+                        }
+                        start = i + 1;
+                        donttokenize = false;
+                        startedComment = ' ';
                     }
                 }
             }
@@ -140,20 +205,49 @@ public class Tokenizer {
         return false;
     }
 
-    public static void main(String[] args){
+    public static void Execute(String path, boolean noise){
         Tokenizer t = new Tokenizer();
-        System.out.println("PIE CODE: \n");
-        System.out.println(t.ReadFile(args[0]));
-/*
-        System.out.println("-----------------------------------------");
-        System.out.println("BASE TOKENS: \n");
-        t.PrintArr(t.Tokens(t.ReadFile(args[0])));
-        System.out.println("-----------------------------------------");
-        System.out.println("TOKENS: \n");
-        t.PrintArr(t.ADVTokens(t.Tokens(t.ReadFile("args[0]))));
-*/
-        System.out.println("-----------------------------------------");
-        System.out.println("TRANSLATED CODE: \n");
-        System.out.println(t.Translate(t.ADVTokens(t.Tokens(t.ReadFile(args[0])))));
+        String piecode = ReadFile(path);
+        Token[] tokens = t.Tokens(piecode);
+        ADVToken[] advTokens = t.ADVTokens(tokens);
+        String output = t.Translate(advTokens);
+        String[] pathArray = path.split(Pattern.quote("\\"));
+        String filename = pathArray[pathArray.length-1].split(Pattern.quote("."))[0];
+        if(pathArray.length > 1) {
+            String pathtofile = String.join("/", Arrays.copyOfRange(pathArray, 0, pathArray.length - 1));
+            WriteFile(pathtofile + "\\" + filename + ".py", output);
+        } else
+            WriteFile(filename + ".py", output);
+        if(noise){
+            System.out.println("PIE CODE: \n");
+            System.out.println(piecode);
+            System.out.println("-----------------------------------------");
+            System.out.println("BASE TOKENS: \n");
+            t.PrintArr(tokens);
+            System.out.println("-----------------------------------------");
+            System.out.println("TOKENS: \n");
+            t.PrintArr(advTokens);
+            System.out.println("-----------------------------------------");
+            System.out.println("TRANSLATED CODE: \n");
+            System.out.println(output);
+        }
+    }
+
+    public static void main(String[] args){
+        if(args.length > 1){
+            for(String s : args) {
+                switch (s.split(Pattern.quote("="))[0]) {
+                    case("comment"):
+                        if (s.split(Pattern.quote("="))[1].equals("false"))
+                            Tokenizer.enableComments = false;
+                        break;
+                    case("noise"):
+                        if (s.split(Pattern.quote("="))[1].equals("true"))
+                            Tokenizer.enableNoise = true;
+                        break;
+                }
+            }
+        }
+        Execute(args[0], Tokenizer.enableNoise);
     }
 }

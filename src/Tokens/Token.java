@@ -1,5 +1,7 @@
 package Tokens;
 
+import java.security.KeyStore;
+
 public abstract class Token <T>{
     protected String type;
     protected T data;
@@ -15,6 +17,11 @@ public abstract class Token <T>{
 
     public T GetData(){
         return data;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return type.equals(obj);
     }
 
     @Override

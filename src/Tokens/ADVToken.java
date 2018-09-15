@@ -25,4 +25,9 @@ public abstract class ADVToken <T> implements Translatable {
 
     public abstract void Append(T t);
 
+    @Override
+    public boolean equals(Object obj) {
+        return type.equals(obj);
+    }
+
 }

@@ -24,8 +24,13 @@ public class ListCommandToken extends ADVToken<ADVToken> {
 
     public String TranslateCommands(){
         StringBuilder s = new StringBuilder();
-        for (ADVToken aData : this.data)
-            s.append(indent).append(aData.Translate()).append("\n");
+        for (ADVToken aData : this.data) {
+
+            if(aData.GetData().get(0).equals("Text") && (((String) ((TextToken) aData.GetData().get(0)).GetData())).charAt(0) == '#')
+                s.append(aData.Translate()).append("\n");
+            else
+                s.append(indent).append(aData.Translate()).append("\n");
+        }
         return s.toString();
     }
 
