@@ -174,13 +174,11 @@ public class Tokenizer {
             switch (t.getType()) {
                 case "StartGroup":
                     opengroups++;
-                    System.out.println("added group="+opengroups);
                     allcommands.add(new GroupToken());
                     currentcommand = allcommands.getLast();
                     break;
                 case "EndGroup":
                     opengroups--;
-                    System.out.println("closed group="+opengroups);
                     GroupToken temp = (GroupToken) allcommands.getLast();
                     allcommands.removeLast();
                     currentcommand = allcommands.getLast();
