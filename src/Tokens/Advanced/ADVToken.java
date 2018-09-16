@@ -1,8 +1,11 @@
-package Tokens;
+package Tokens.Advanced;
+
+import Tokens.BASETOKEN;
+import Tokens.Translatable;
 
 import java.util.LinkedList;
 
-public abstract class ADVToken <T> implements Translatable {
+public abstract class ADVToken <T> implements Translatable{
 
     protected String type;
     protected LinkedList<T> data;

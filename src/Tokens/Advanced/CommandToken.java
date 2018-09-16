@@ -1,7 +1,10 @@
-package Tokens;
+package Tokens.Advanced;
 
-public class CommandToken extends ADVToken<Token> {
+import Tokens.BASETOKEN;
+import Tokens.Basic.Token;
 
+public class CommandToken extends ADVToken<BASETOKEN>  {
+//should hold only tokens and group tokens
     public CommandToken() {
         super("CommandToken");
     }
@@ -10,7 +13,7 @@ public class CommandToken extends ADVToken<Token> {
     public String toString() {
         StringBuilder result = new StringBuilder();
         result.append("CommandToken < ");
-        for(Token c: data){
+        for(BASETOKEN c: data){
             result.append(c).append(" ");
         }
         result.append(" >");
@@ -20,14 +23,19 @@ public class CommandToken extends ADVToken<Token> {
     @Override
     public String Translate() {
         StringBuilder result = new StringBuilder();
-        for(Token c: data){
-            result.append(c.GetData()).append(" ");
+        for(BASETOKEN c: data){
+            try{
+                GroupToken g = (GroupToken) c;
+                result.append(g.Translate()).append(" ");
+            } catch (Exception e) {
+                result.append(c.GetData()).append(" ");
+            }
         }
         return result.toString();
     }
 
     @Override
-    public void Append(Token t) {
+    public void Append(BASETOKEN t) {
         this.data.add(t);
     }
 

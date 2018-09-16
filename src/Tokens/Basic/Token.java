@@ -1,8 +1,8 @@
-package Tokens;
+package Tokens.Basic;
 
-import java.security.KeyStore;
+import Tokens.BASETOKEN;
 
-public abstract class Token <T>{
+public abstract class Token <T> implements BASETOKEN {
     protected String type;
     protected T data;
 
@@ -25,5 +25,12 @@ public abstract class Token <T>{
     }
 
     @Override
-    public abstract String toString();
+    public String toString(){
+        return "["+type+"Token" + "='"+ data.toString() +"\']";
+    }
+
+    @Override
+    public String getText(){
+        return GetData().toString();
+    }
 }

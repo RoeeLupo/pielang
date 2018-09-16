@@ -1,6 +1,7 @@
-package Tokens;
+package Tokens.Advanced;
 
-import java.util.TooManyListenersException;
+import Tokens.Basic.TextToken;
+import Tokens.Tools;
 
 public class ListCommandToken extends ADVToken<ADVToken> {
     private CommandToken title;
