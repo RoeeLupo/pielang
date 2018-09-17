@@ -210,6 +210,12 @@ public class Tokenizer {
                     } else if(t.getText().equals("+") && currentcommand.GetData().getLast().getText().equals("+")){
                         currentcommand.GetData().removeLast();
                         currentcommand.Append(new TextToken("+=1"));
+                    } else if(t.getText().equals("-") && currentcommand.GetData().getLast().getText().equals("-")){
+                        currentcommand.GetData().removeLast();
+                        currentcommand.Append(new TextToken("-=1"));
+                    } else if(t.getText().equals("*") && currentcommand.GetData().getLast().getText().equals("*")){
+                        currentcommand.GetData().removeLast();
+                        currentcommand.Append(new TextToken("*=" + currentcommand.GetData().getLast().getText()));
                     } else {
                         currentcommand.Append(t);
                     }
