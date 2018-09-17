@@ -6,7 +6,7 @@ These instructions will help you install and use the PieLang translator, on your
 Before we start, you will need to have an updated version of JRE installed. Which you can get here: [JRE 8](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
 Also if you want to run the translated .py file, you got to have Python installed. Which you can get here:  [Python](https://www.python.org/downloads/)
 ### Installing
-Download the JAR version of the program by clicking this [link](https://mega.nz/#!uRtFCYbJ!ddzhq9e-fmJHcykILNYuLLo_EvD9BlGZhqYaCMXvkmo). And you are ready to go!
+Download the JAR version of the program by clicking this [link](https://mega.nz/#!bB8DDQwQ!CsuUacRcoW6zvB6gWxAGyIW_AuSjV6bxnVznz4fMtWA). And you are ready to go!
 ## Usage
 To translate your .pie file into a working Python file, you will need to type the following commands on the CMD/Terminal, and launch it where the JAR file is located.
 ```
