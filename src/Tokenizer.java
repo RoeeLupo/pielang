@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class Tokenizer {
     private Character[] separators = {'{', '}', ';', '(', ')', '|', '+', '*', '/', '-', '>', '~'}, ws = {' ', '\t', '\n'};
     private String[] operators = {"<=", ">=", "==", "<", ">", "!="};
-    private String[] commands = {"loop"};
+    private String[] commands = {"loop", "compare", "to", "elseto"};
     private static boolean enableComments = true, enableNoise = false;
 
     public static String ReadFile(String filePath){
@@ -191,7 +191,11 @@ public class Tokenizer {
                         allcommands.add(new CommandToken());
                         currentcommand = allcommands.getLast();
                     } else if ((t.GetData().equals('{'))) {
-                        all.add(new ListCommandToken(current.GetIndent() + "\t", (CommandToken) currentcommand));
+                        String ind = current.GetIndent();
+                        if(currentcommand.GetData().get(0).getType().equals("Script") &&
+                                (currentcommand.GetData().get(0).getText().equals("to") || currentcommand.GetData().get(0).getText().equals("elseto")))
+                            ind = ind.substring(0, ind.length()-1);
+                        all.add(new ListCommandToken(ind + "\t", (CommandToken) currentcommand));
                         allcommands.clear();
                         allcommands.add(new CommandToken());
                         currentcommand = allcommands.getLast();
@@ -267,9 +271,28 @@ public class Tokenizer {
     public static void Execute(String path, boolean noise){
         Tokenizer t = new Tokenizer();
         String piecode = ReadFile(path);
+        if(noise) {
+            System.out.println("PIE CODE: \n");
+            System.out.println(piecode);
+            System.out.println("-----------------------------------------");
+        }
         Token[] tokens = t.Tokens(piecode);
+        if(noise) {
+            System.out.println("BASIC TOKENS: \n");
+            t.PrintArr(tokens);
+            System.out.println("-----------------------------------------");
+        }
         ADVToken[] advTokens = t.ADVTokens(tokens);
+        if(noise) {
+            System.out.println("ADVANCED TOKENS: \n");
+            t.PrintArr(advTokens);
+            System.out.println("-----------------------------------------");
+        }
         String output = t.Translate(advTokens);
+        if(noise) {
+            System.out.println("TRANSLATED CODE: \n");
+            System.out.println(output);
+        }
         String[] pathArray = path.split(Pattern.quote("\\"));
         String filename = pathArray[pathArray.length-1].split(Pattern.quote("."))[0];
         if(pathArray.length > 1) {
@@ -277,19 +300,6 @@ public class Tokenizer {
             WriteFile(pathtofile + "\\" + filename + ".py", output);
         } else
             WriteFile(filename + ".py", output);
-        if(noise){
-            System.out.println("PIE CODE: \n");
-            System.out.println(piecode);
-            System.out.println("-----------------------------------------");
-            System.out.println("BASIC TOKENS: \n");
-            t.PrintArr(tokens);
-            System.out.println("-----------------------------------------");
-            System.out.println("ADVANCED TOKENS: \n");
-            t.PrintArr(advTokens);
-            System.out.println("-----------------------------------------");
-            System.out.println("TRANSLATED CODE: \n");
-            System.out.println(output);
-        }
     }
 
     public static void main(String[] args){

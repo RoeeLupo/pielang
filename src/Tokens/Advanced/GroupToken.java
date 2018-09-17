@@ -28,10 +28,8 @@ public class GroupToken extends ADVToken<BASETOKEN> implements BASETOKEN {
         this.data.add(token);
     }
 
-    @Override
-    public String Translate() {
+    public String BaseTranslate(){
         StringBuilder result = new StringBuilder();
-        result.append("(");
         for(BASETOKEN c: data){
             try {
                 GroupToken g = (GroupToken) c;
@@ -40,7 +38,13 @@ public class GroupToken extends ADVToken<BASETOKEN> implements BASETOKEN {
                 result.append(c.GetData()).append(" ");
             }
         }
-        result.append(")");
         return result.toString();
+    }
+
+    @Override
+    public String Translate() {
+        return "(" +
+                BaseTranslate() +
+                ")";
     }
 }
