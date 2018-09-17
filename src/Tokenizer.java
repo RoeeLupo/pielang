@@ -202,6 +202,7 @@ public class Tokenizer {
                         currentcommand = allcommands.getLast();
                         all.get(all.size() - 2).Append(all.get(all.size() - 1));
                         all.removeLast();
+                        current = all.get(all.size()-1);
                     } else if(t.getText().equals("+") && currentcommand.GetData().getLast().getText().equals("+")){
                         currentcommand.GetData().removeLast();
                         currentcommand.Append(new TextToken("+=1"));
