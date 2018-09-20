@@ -24,6 +24,6 @@ javac Tokenizer.java
 java Tokenizer
 ```
 ## Made by
-Argaman meir gez
+Argaman Meir Gez
 ## Support
 Any support will be much appreciated :) 
