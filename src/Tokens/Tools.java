@@ -39,7 +39,7 @@ public class Tools {
             String ifstr = "";
             for(int i = 1; i < l.GetData().size(); i++){
                 to = (ListCommandToken) l.GetData().get(i);
-                if(to.GetTitle().GetData().get(0).getText().equals("elseto")) {
+                if(to.GetTitle().GetData().get(0).getText().equals("elto")) {
                     ifstr = "elif";
                 }
                 else {

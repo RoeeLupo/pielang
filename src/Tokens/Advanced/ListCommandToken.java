@@ -25,7 +25,6 @@ public class ListCommandToken extends ADVToken<ADVToken> {
 
     public String TranslateCommands(){
         StringBuilder s = new StringBuilder();
-        System.out.println(title.GetData().get(0).getText());
         for (ADVToken aData : this.data) {
             if(aData.GetData().get(0).equals("Text") && (((String) ((TextToken) aData.GetData().get(0)).GetData())).charAt(0) == '#')
                 s.append(aData.Translate()).append("\n");
@@ -37,7 +36,6 @@ public class ListCommandToken extends ADVToken<ADVToken> {
 
     @Override
     public String Translate() {
-        System.out.println(title.GetData().get(0).getType());
         if(title.GetData().get(0).getType().equals("Script")) {
             return Tools.TranslateCommand(this);
         } else {

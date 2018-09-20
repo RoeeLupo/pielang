@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class Tokenizer {
     private Character[] separators = {'{', '}', ';', '(', ')', '|', '+', '*', '/', '-', '>', '~'}, ws = {' ', '\t', '\n'};
     private String[] operators = {"<=", ">=", "==", "<", ">", "!="};
-    private String[] commands = {"loop", "compare", "to", "elseto"};
+    private String[] commands = {"loop", "compare", "to", "elto"};
     private static boolean enableComments = true, enableNoise = false;
 
     public static String ReadFile(String filePath){
@@ -79,6 +79,14 @@ public class Tokenizer {
                     }
                     if (start != i)
                         tokens.add(GenerateToken(s.substring(start, i)));
+                    if(s.charAt(i) == '{' && tokens.getLast().getText().equals("dict")){
+                        tokens.removeLast();
+                        donttokenize = true;
+                        startedText = '}';
+                        start = i;
+                        i++;
+                        continue;
+                    }
                     if(s.charAt(i) == '(')
                         tokens.add(new StartGroupToken());
                     else if(s.charAt(i) == ')')
@@ -213,9 +221,6 @@ public class Tokenizer {
                     } else if(t.getText().equals("-") && currentcommand.GetData().getLast().getText().equals("-")){
                         currentcommand.GetData().removeLast();
                         currentcommand.Append(new TextToken("-=1"));
-                    } else if(t.getText().equals("*") && currentcommand.GetData().getLast().getText().equals("*")){
-                        currentcommand.GetData().removeLast();
-                        currentcommand.Append(new TextToken("*=" + currentcommand.GetData().getLast().getText()));
                     } else {
                         currentcommand.Append(t);
                     }
