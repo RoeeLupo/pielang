@@ -1,7 +1,5 @@
 package Tokens.Basic;
 
-import Tokens.BASETOKEN;
-
 public class EndGroupToken extends Token<Character> {
 
     public EndGroupToken() {

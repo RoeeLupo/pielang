@@ -1,36 +1,26 @@
 package Tokens.Advanced;
 
-import Tokens.BASETOKEN;
-import Tokens.Translatable;
+import Tokens.Basic.Token;
 
 import java.util.LinkedList;
 
-public abstract class ADVToken <T> implements Translatable{
+public abstract class ADVToken <T> extends Token<LinkedList<T>> {
 
-    protected String type;
-    protected LinkedList<T> data;
 
     public ADVToken(String type) {
-        this.type = type;
-        this.data = new LinkedList<>();
+        super(type, new LinkedList<>());
     }
 
-    public String getType() {
-        return type;
-    }
-
+    //Had to return LinkedList<T> for the times you use ADVToken without specifying T
     public LinkedList<T> GetData(){
         return data;
     }
 
-    @Override
-    public abstract String toString();
-
-    public abstract void Append(T t);
-
-    @Override
-    public boolean equals(Object obj) {
-        return type.equals(obj);
+    public void Append(T t){
+        this.data.add(t);
     }
+
+    //Basically does the same thing as GetText, but only ADVTokens have this function
+    public abstract String Translate();
 
 }

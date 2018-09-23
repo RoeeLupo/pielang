@@ -1,8 +1,8 @@
 package Tokens.Advanced;
 
-import Tokens.BASETOKEN;
+import Tokens.BaseToken;
 
-public class GroupToken extends ADVToken<BASETOKEN> implements BASETOKEN {
+public class GroupToken extends ADVToken<BaseToken> implements BaseToken {
     public GroupToken() {
         super("GroupToken");
     }
@@ -11,40 +11,26 @@ public class GroupToken extends ADVToken<BASETOKEN> implements BASETOKEN {
     public String toString() {
         StringBuilder result = new StringBuilder();
         result.append("GroupToken < ");
-        for(BASETOKEN c: data){
+        for(BaseToken c: data)
             result.append(c).append(" ");
-        }
         result.append(" >");
         return result.toString();
     }
 
     @Override
-    public String getText() {
+    public String GetText() {
         return Translate();
-    }
-
-    @Override
-    public void Append(BASETOKEN token) {
-        this.data.add(token);
     }
 
     public String BaseTranslate(){
         StringBuilder result = new StringBuilder();
-        for(BASETOKEN c: data){
-            try {
-                GroupToken g = (GroupToken) c;
-                result.append(g.Translate()).append(" ");
-            } catch (Exception e) {
-                result.append(c.GetData()).append(" ");
-            }
-        }
+        for(BaseToken c: data)
+            result.append(c.GetText()).append(" ");
         return result.toString();
     }
 
     @Override
     public String Translate() {
-        return "(" +
-                BaseTranslate() +
-                ")";
+        return "(" + BaseTranslate() + ")";
     }
 }
