@@ -6,7 +6,7 @@ These instructions will help you install and use the PieLang translator, on your
 Before we start, you will need to have an updated version of JRE installed. Which you can get here: [JRE 8](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
 Also if you want to run the translated .py file, you got to have Python installed. Which you can get here:  [Python](https://www.python.org/downloads/)
 ### Installing
-Download the JAR version of the program by clicking this [link](https://mega.nz/#!DcMEhAqK!h9dqAgCLid8zkxYCJSzfSk8mP_rwiczBrRHf6GM2K1c). And you are ready to go!
+Download the JAR version of the program by clicking this [link](https://mega.nz/#!yN01xRbQ!QCpxV3LFxRrl03R7Q3f7Nu-Jk_TjSDLxIGvQykGi7U0). And you are ready to go!
 ## Usage
 To translate your .pie file into a working Python file, you will need to type the following commands on the CMD/Terminal, and launch it where the JAR file is located.
 ```
@@ -24,6 +24,6 @@ javac Tokenizer.java
 java Tokenizer
 ```
 ## Made by
-Argaman meir gez
+Argaman Meir Gez
 ## Support
 Any support will be much appreciated :) 
