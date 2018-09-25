@@ -1,5 +1,5 @@
 # PieLang
-Introducing PieLang, a Java translator for pie language, which gives you an extended and more forgiving syntex for Python.
+Introducing PieLang, a Java translator for pie language, which gives you an extended and more forgiving syntax for Python.
 ## Getting Started
 These instructions will help you install and use the PieLang translator, on your machine.
 ### Prerequisites
