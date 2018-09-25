@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Tools {
-
+    //linux
     private static HashMap<String, LinkedList<String>> types = new HashMap<>();
     private static String[] commands = {"loop", "compare", "to", "elto"};
     private static Character[] ws = {' ', '\t', '\n'};
