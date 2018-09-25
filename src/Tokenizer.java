@@ -1,7 +1,4 @@
-import Tokens.Advanced.ADVToken;
-import Tokens.Advanced.CommandToken;
-import Tokens.Advanced.GroupToken;
-import Tokens.Advanced.ListCommandToken;
+import Tokens.Advanced.*;
 import Tokens.BaseToken;
 import Tokens.Basic.*;
 import Tokens.Tools;
@@ -11,7 +8,7 @@ import java.util.LinkedList;
 import java.util.regex.Pattern;
 
 public class Tokenizer {
-    private Character[] separators = {'{', '}', ';', '(', ')', '|', '+', '*', '/', '-', '>', '~'}, ws = {' ', '\t', '\n'};
+    private Character[] separators = {'{', '}', ';', '(', ')', '|', '+', '*', '/', '-', '>', '~', '='}, ws = {' ', '\t', '\n'};
     private String[] operators = {"<=", ">=", "==", "<", ">", "!="};
     private static boolean enableComments = true, enableNoise = false;
 
@@ -39,7 +36,8 @@ public class Tokenizer {
                         if (start != i)
                             tokens.add(Tools.GenerateToken(s.substring(start, i)));
                         tokens.add(new OperatorToken(Tools.PairAt(s, i)));
-                        start = i + Tools.PairAt(s, i).length();
+                        i += Tools.PairAt(s, i).length() - 1;
+                        start = i + 1;
                         break;
 
                     case 1: // in(s.charAt(i), ws)
@@ -57,8 +55,9 @@ public class Tokenizer {
                             start = i;
                             continue;
                         }
-                        if (start != i)
+                        if (start != i) {
                             tokens.add(Tools.GenerateToken(s.substring(start, i)));
+                        }
                         if (s.charAt(i) == '{' && tokens.getLast().GetText().equals("dict")) {
                             tokens.removeLast();
                             donttokenize = true;
@@ -219,6 +218,10 @@ public class Tokenizer {
                     } else if(t.GetText().equals("-") && currentcommand.GetData().getLast().GetText().equals("-")){
                         currentcommand.GetData().removeLast();
                         currentcommand.Append(new TextToken("-=1"));
+                    } else if(t.GetText().equals("=")){
+                        allcommands.removeLast();
+                        allcommands.add(new SetVarToken(currentcommand, all.get(0).GetIndent()));
+                        currentcommand = allcommands.getLast();
                     } else {
                         currentcommand.Append(t);
                     }
