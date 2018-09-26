@@ -1,5 +1,5 @@
 # PieLang
-![pielang](https://i.imgur.com/bJpyZvS.png)
+![pielang](https://i.imgur.com/o8pkCqz.png)
 
 Introducing PieLang, a Java translator for pie language, which gives you an extended and more forgiving syntax for Python.
 ## Getting Started
