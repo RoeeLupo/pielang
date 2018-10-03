@@ -1,5 +1,6 @@
 package Tokens;
 
+import Tokens.Advanced.CommandToken;
 import Tokens.Advanced.GroupToken;
 import Tokens.Advanced.ListCommandToken;
 import Tokens.Basic.NumToken;
@@ -16,8 +17,8 @@ import java.util.LinkedList;
 
 public class Tools {
     //linux
-    private static HashMap<String, LinkedList<String>> types = new HashMap<>();
-    private static String[] commands = {"loop", "compare", "to", "elto"};
+    //private static HashMap<String, LinkedList<String>> types = new HashMap<>();
+    private static String[] commands = {"loop", "compare", "to", "elto", "replace"};
     private static Character[] ws = {' ', '\t', '\n'};
 
     public static String ReadFile(String filePath){
@@ -141,6 +142,7 @@ public class Tools {
         return -1;
     }
 
+    /*
     public static void UpdateType(String type, String newtype){
         LinkedList<String> temp;
         if(types.containsKey(type))
@@ -160,5 +162,6 @@ public class Tools {
             if(isType(base, s)) return true;
         return false;
     }
+    */
 
 }

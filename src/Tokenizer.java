@@ -4,6 +4,7 @@ import Tokens.Basic.*;
 import Tokens.Tools;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
 
@@ -22,6 +23,7 @@ public class Tokenizer {
         char startedComment = ' ';
         boolean startedPure = false;
         boolean donttokenize = false;
+        boolean dict = false;
         while(i < s.length()){
             if(!donttokenize) {
                 condition = Tools.If( Tools.in(Tools.PairAt(s,i), pairs),
@@ -67,11 +69,16 @@ public class Tokenizer {
                         }
                         if (s.charAt(i) == '{' && tokens.getLast().GetText().equals("dict")) {
                             tokens.removeLast();
-                            donttokenize = true;
-                            startedText = '}';
-                            start = i;
-                            i++;
-                            continue;
+                            dict = true;
+                            tokens.add(new TextToken("{"));
+                            start = i + 1;
+                            break;
+                        }
+                        if (s.charAt(i) == '}' && dict) {
+                            tokens.add(new TextToken("}"));
+                            dict = false;
+                            start = i + 1;
+                            break;
                         }
                         if (s.charAt(i) == '(')
                             tokens.add(new StartGroupToken());
@@ -182,7 +189,17 @@ public class Tokenizer {
         allcommands.add(new CommandToken());
         ADVToken<BaseToken> currentcommand = allcommands.get(0);
         int opengroups = 0;
-        for(Token t: tokens){
+        HashMap<String, String> replace = new HashMap<>();
+        Token t;
+        for(int i = 0; i < tokens.length; i++){
+            t = tokens[i];
+            if(replace.containsKey(t.GetText()))
+                t = Tools.GenerateToken(replace.get(t.GetText()));
+            if(t.GetText().equals("replace")){
+                replace.put(tokens[i+1].GetText(), tokens[i+2].GetText());
+                i += 3;
+                continue;
+            }
             switch (t.GetType()) {
                 case "StartGroup":
                     opengroups++;
@@ -241,8 +258,8 @@ public class Tokenizer {
             }
 
         }
-        ADVToken[] t = new ADVToken[main.GetData().size()];
-        return main.GetData().toArray(t);
+        ADVToken[] tt = new ADVToken[main.GetData().size()];
+        return main.GetData().toArray(tt);
     }
 
     private String Translate(ADVToken[] advTokens){
@@ -253,7 +270,7 @@ public class Tokenizer {
         return s.toString();
     }
 
-    public static void Execute(String path, boolean noise){
+    private static void Execute(String path, boolean noise){
         Tokenizer t = new Tokenizer();
         String piecode = Tools.ReadFile(path);
         if(noise) {

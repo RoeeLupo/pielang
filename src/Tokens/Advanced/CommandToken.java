@@ -1,6 +1,7 @@
 package Tokens.Advanced;
 
 import Tokens.BaseToken;
+import Tokens.Tools;
 
 public class CommandToken extends ADVToken<BaseToken>  {
 //should hold only tokens and group tokens
