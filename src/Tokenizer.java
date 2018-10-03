@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 public class Tokenizer {
     private Character[] separators = {'{', '}', ';', '(', ')', '|', '+', '*', '/', '-', '>', '~', '='}, ws = {' ', '\t', '\n'};
     private String[] operators = {"<=", ">=", "==", "<", ">", "!="};
+    private String[] pairs = {"+=", "*=", "/=", "-=", "++", "--"};
     private static boolean enableComments = true, enableNoise = false;
 
     private Token[] Tokens(String s){
@@ -23,16 +24,22 @@ public class Tokenizer {
         boolean donttokenize = false;
         while(i < s.length()){
             if(!donttokenize) {
-                condition = Tools.If(
-                          Tools.in(Tools.PairAt(s,i), operators),
+                condition = Tools.If( Tools.in(Tools.PairAt(s,i), pairs),
+                                      Tools.in(Tools.PairAt(s,i), operators),
                                       Tools.in(s.charAt(i), ws),
                                       Tools.in(s.charAt(i), separators),
                                       s.charAt(i) == '"' || s.charAt(i) == '\'',
                                       s.charAt(i) == '#'
                 );
                 switch (condition) {
-
-                    case 0: // in(PairAt(s, i), operators)
+                    case 0:
+                        if (start != i)
+                            tokens.add(Tools.GenerateToken(s.substring(start, i)));
+                        tokens.add(new PairToken(Tools.PairAt(s, i)));
+                        i += Tools.PairAt(s, i).length() - 1;
+                        start = i + 1;
+                        break;
+                    case 1: // in(PairAt(s, i), operators)
                         if (start != i)
                             tokens.add(Tools.GenerateToken(s.substring(start, i)));
                         tokens.add(new OperatorToken(Tools.PairAt(s, i)));
@@ -40,13 +47,13 @@ public class Tokenizer {
                         start = i + 1;
                         break;
 
-                    case 1: // in(s.charAt(i), ws)
+                    case 2: // in(s.charAt(i), ws)
                         if (start != i)
                             tokens.add(Tools.GenerateToken(s.substring(start, i)));
                         start = i + 1;
                         break;
 
-                    case 2: // in(s.charAt(i), separators)
+                    case 3: // in(s.charAt(i), separators)
                         if (s.charAt(i) == '{' && tokens.getLast().GetData().equals('~')) {
                             tokens.removeLast();
                             startedPure = true;
@@ -75,14 +82,14 @@ public class Tokenizer {
                         start = i + 1;
                         break;
 
-                    case 3: // s.charAt(i) == '"' || s.charAt(i) == '\''
+                    case 4: // s.charAt(i) == '"' || s.charAt(i) == '\''
                         if (start != i)
                             tokens.add(Tools.GenerateToken(s.substring(start, i)));
                         startedText = s.charAt(i);
                         donttokenize = true;
                         break;
 
-                    case 4: // s.charAt(i) == '#'
+                    case 5: // s.charAt(i) == '#'
                         if (s.charAt(i + 1) == '{') {
                             startedComment = '}';
                             donttokenize = true;
@@ -212,12 +219,6 @@ public class Tokenizer {
                         all.get(all.size() - 2).Append(all.get(all.size() - 1));
                         all.removeLast();
                         current = all.get(all.size()-1);
-                    } else if(t.GetText().equals("+") && currentcommand.GetData().getLast().GetText().equals("+")){
-                        currentcommand.GetData().removeLast();
-                        currentcommand.Append(new TextToken("+=1"));
-                    } else if(t.GetText().equals("-") && currentcommand.GetData().getLast().GetText().equals("-")){
-                        currentcommand.GetData().removeLast();
-                        currentcommand.Append(new TextToken("-=1"));
                     } else if(t.GetText().equals("=")){
                         allcommands.removeLast();
                         allcommands.add(new SetVarToken(currentcommand, all.get(0).GetIndent()));
@@ -226,11 +227,14 @@ public class Tokenizer {
                         currentcommand.Append(t);
                     }
                     break;
-                case "Operator":
-                    if(t.GetText().equals("++")) {
+                case "Pair":
+                    if(t.GetText().equals("++"))
                         currentcommand.Append(new TextToken("+=1"));
-                        break;
-                    }
+                    else if(t.GetText().equals("--"))
+                        currentcommand.Append(new TextToken("-=1"));
+                    else
+                        currentcommand.Append(t);
+                    break;
                 default:
                     currentcommand.Append(t);
                     break;
