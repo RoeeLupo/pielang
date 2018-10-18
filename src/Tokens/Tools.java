@@ -64,6 +64,12 @@ public class Tools {
         return s.substring(i, i+2);
     }
 
+    public static boolean StringAt(String text, String s, int i){
+        if(text.length() < i + s.length())
+            return false;
+        return text.substring(i, i + s.length()).equals(s);
+    }
+
     public static boolean in(Object o, Object[] arr){
         for(Object obj : arr)
             if(o.equals(obj))

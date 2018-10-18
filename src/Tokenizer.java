@@ -319,6 +319,9 @@ public class Tokenizer {
                 }
             }
         }
-        Execute(args[0], Tokenizer.enableNoise);
+        if(args.length > 1 && args[1].equals("reverse"))
+            DisTokenizer.Execute(args[0]);
+        else
+            Execute(args[0], Tokenizer.enableNoise);
     }
 }
