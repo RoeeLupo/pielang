@@ -2,7 +2,7 @@ package Tokens.Basic;
 
 import Tokens.BaseToken;
 
-public abstract class Token <T> implements BaseToken {
+public abstract class Token <T> implements BaseToken{
     private String type;
     protected T data;
 

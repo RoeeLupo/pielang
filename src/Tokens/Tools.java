@@ -148,6 +148,10 @@ public class Tools {
         return -1;
     }
 
+    public static int compareIndent(String s1, String s2){
+        return s1.length() - s2.length();
+    }
+
     /*
     public static void UpdateType(String type, String newtype){
         LinkedList<String> temp;

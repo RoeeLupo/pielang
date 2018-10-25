@@ -19,7 +19,7 @@ public class Tokenizer {
         int start = 0;
         int i = 0;
         int condition;
-        char startedText = ' ';
+        String startedText = " ";
         char startedComment = ' ';
         boolean startedPure = false;
         boolean donttokenize = false;
@@ -90,10 +90,13 @@ public class Tokenizer {
                         break;
 
                     case 4: // s.charAt(i) == '"' || s.charAt(i) == '\''
-                        if (start != i)
-                            tokens.add(Tools.GenerateToken(s.substring(start, i)));
-                        startedText = s.charAt(i);
-                        donttokenize = true;
+                        if(Tools.StringAt(s, "\"\"\"", i)){
+                            startedText = "\"\"\"";
+                            donttokenize = true;
+                        } else {
+                            startedText = s.substring(i, i + 1);
+                            donttokenize = true;
+                        }
                         break;
 
                     case 5: // s.charAt(i) == '#'
@@ -119,18 +122,18 @@ public class Tokenizer {
                     }
             } else {
                 condition = Tools.If(
-                        startedText != ' ',
+                        !startedText.equals(" "),
                                   startedPure,
                                   startedComment != ' '
                 );
                 switch (condition) {
 
                     case 0: // startedText != ' '
-                        if (s.charAt(i) == startedText) {
-                            tokens.add(new TextToken(s.substring(start, i + 1)));
-                            startedText = ' ';
+                        if (Tools.StringAt(s, startedText, i)) {
+                            tokens.add(new TextToken(s.substring(start, i + startedText.length())));
+                            start = i + startedText.length();
+                            startedText = " ";
                             donttokenize = false;
-                            start = i + 1;
                         }
                         break;
 
@@ -320,7 +323,7 @@ public class Tokenizer {
             }
         }
         if(args.length > 1 && args[1].equals("reverse"))
-            DisTokenizer.Execute(args[0]);
+            RevertTool.Execute(args[0]);
         else
             Execute(args[0], Tokenizer.enableNoise);
     }

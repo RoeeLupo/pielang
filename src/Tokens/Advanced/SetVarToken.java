@@ -52,7 +52,7 @@ public class SetVarToken extends ADVToken<BaseToken> {
             for (BaseToken c : data)
                 result.append(c.GetText()).append(" ");
             result.append("\n").append(indent)
-                    .append("if (type(").append(name).append(") == type(Temp_Pure_Var)) : raise Exception(\"PureTypeError: Types don't match.\")\n");
+                    .append("if (type(").append(name).append(") != type(Temp_Pure_Var)) : raise Exception(\"PureTypeError: Types don't match.\")\n");
             result.append(indent).append(name).append(" = Temp_Pure_Var");
         }
         return result.toString();
