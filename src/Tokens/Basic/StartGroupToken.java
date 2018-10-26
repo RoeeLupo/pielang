@@ -2,8 +2,8 @@ package Tokens.Basic;
 
 public class StartGroupToken extends Token<Character> {
 
-    public StartGroupToken() {
-        super("StartGroup", '(');
+    public StartGroupToken(int line) {
+        super("StartGroup", '(', line);
     }
 
     @Override

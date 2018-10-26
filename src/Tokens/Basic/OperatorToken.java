@@ -2,8 +2,8 @@ package Tokens.Basic;
 
 public class OperatorToken extends Token<String> {
 
-    public OperatorToken(String data) {
-        super("Operator", data);
+    public OperatorToken(String data, int line) {
+        super("Operator", data, line);
     }
 
 }

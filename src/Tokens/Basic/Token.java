@@ -5,10 +5,12 @@ import Tokens.BaseToken;
 public abstract class Token <T> implements BaseToken{
     private String type;
     protected T data;
+    protected int line;
 
-    public Token(String type, T data) {
+    public Token(String type, T data, int line) {
         this.type = type;
         this.data = data;
+        this.line = line;
     }
 
     public T GetData(){
@@ -36,5 +38,9 @@ public abstract class Token <T> implements BaseToken{
     @Override
     public String GetText(){
         return GetData().toString();
+    }
+
+    public int GetLine(){
+        return line;
     }
 }

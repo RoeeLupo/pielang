@@ -18,12 +18,14 @@ public class SetVarToken extends ADVToken<BaseToken> {
             controlled = true;
             name = header.GetData().get(1).GetText();
             controlledVars.add(name);
-        } else if(header.GetData().getLast().GetText().charAt(0) == ':')
+        } else if(header.GetData().getLast().GetText().charAt(0) == ':') // the first word not pure
             name = header.GetData().get(header.GetData().size()-1).GetText();
-        else
+        else // the first word is the name and there's no type, meaning the last word must be the name
             name = header.GetData().getLast().GetText();
         this.indent = indent;
     }
+
+
 
     @Override
     public String toString() {
@@ -38,13 +40,14 @@ public class SetVarToken extends ADVToken<BaseToken> {
     }
 
     @Override
-    public String Translate() {
+    public String Translate() throws Exception {
         StringBuilder result = new StringBuilder();
-        if(controlled || /*controled is false && */ !Tools.in(name, controlledVars.toArray())) {
+        if(controlled || /*controled is false && */ !Tools.in(name, controlledVars.toArray())) { // which means there's no need to check the type
             if(controlled)
-                result.append(header.Translate().substring(header.Translate().indexOf(" ")+1)).append("= ");
+                // header.Translate().substring(header.Translate().indexOf(" ")+1)
+                result.append(name).append(" = ");
             else
-                result.append(header.Translate()).append("=");
+                result.append(header.Translate()).append(" = ");
             for (BaseToken c : data)
                 result.append(c.GetText()).append(" ");
         } else {

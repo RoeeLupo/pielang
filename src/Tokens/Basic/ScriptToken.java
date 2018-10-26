@@ -2,8 +2,8 @@ package Tokens.Basic;
 
 public class ScriptToken extends Token<String>  {
 
-    public ScriptToken(String data) {
-        super("Script", data);
+    public ScriptToken(String data, int line) {
+        super("Script", data, line);
     }
 
 }

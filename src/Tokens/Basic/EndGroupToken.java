@@ -2,8 +2,8 @@ package Tokens.Basic;
 
 public class EndGroupToken extends Token<Character> {
 
-    public EndGroupToken() {
-        super("EndGroup", ')');
+    public EndGroupToken(int line) {
+        super("EndGroup", ')', line);
     }
 
     @Override

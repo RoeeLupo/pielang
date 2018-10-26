@@ -1,14 +1,15 @@
 package Tokens.Advanced;
 
+import Tokens.BaseToken;
 import Tokens.Basic.Token;
 
 import java.util.LinkedList;
 
-public abstract class ADVToken <T> extends Token<LinkedList<T>> {
+public abstract class ADVToken <T extends BaseToken> extends Token<LinkedList<T>> {
 
 
     public ADVToken(String type) {
-        super(type, new LinkedList<>());
+        super(type, new LinkedList<>(), 0);
     }
 
     //Had to return LinkedList<T> for the times you use ADVToken without specifying T
@@ -17,10 +18,12 @@ public abstract class ADVToken <T> extends Token<LinkedList<T>> {
     }
 
     public void Append(T t){
+        if(data.size() == 0)
+            this.line = t.GetLine();
         this.data.add(t);
     }
 
     //Basically does the same thing as GetText, but only ADVTokens have this function
-    public abstract String Translate();
+    public abstract String Translate() throws Exception;
 
 }

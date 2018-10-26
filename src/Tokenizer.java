@@ -24,7 +24,10 @@ public class Tokenizer {
         boolean startedPure = false;
         boolean donttokenize = false;
         boolean dict = false;
+        int line = 1;
         while(i < s.length()){
+            if(s.charAt(i) == '\n')
+                line++;
             if(!donttokenize) {
                 condition = Tools.If( Tools.in(Tools.PairAt(s,i), pairs),
                                       Tools.in(Tools.PairAt(s,i), operators),
@@ -36,22 +39,22 @@ public class Tokenizer {
                 switch (condition) {
                     case 0:
                         if (start != i)
-                            tokens.add(Tools.GenerateToken(s.substring(start, i)));
-                        tokens.add(new PairToken(Tools.PairAt(s, i)));
+                            tokens.add(Tools.GenerateToken(s.substring(start, i), line));
+                        tokens.add(new PairToken(Tools.PairAt(s, i), line));
                         i += Tools.PairAt(s, i).length() - 1;
                         start = i + 1;
                         break;
                     case 1: // in(PairAt(s, i), operators)
                         if (start != i)
-                            tokens.add(Tools.GenerateToken(s.substring(start, i)));
-                        tokens.add(new OperatorToken(Tools.PairAt(s, i)));
+                            tokens.add(Tools.GenerateToken(s.substring(start, i), line));
+                        tokens.add(new OperatorToken(Tools.PairAt(s, i), line));
                         i += Tools.PairAt(s, i).length() - 1;
                         start = i + 1;
                         break;
 
                     case 2: // in(s.charAt(i), ws)
                         if (start != i)
-                            tokens.add(Tools.GenerateToken(s.substring(start, i)));
+                            tokens.add(Tools.GenerateToken(s.substring(start, i), line));
                         start = i + 1;
                         break;
 
@@ -65,27 +68,27 @@ public class Tokenizer {
                             continue;
                         }
                         if (start != i) {
-                            tokens.add(Tools.GenerateToken(s.substring(start, i)));
+                            tokens.add(Tools.GenerateToken(s.substring(start, i), line));
                         }
                         if (s.charAt(i) == '{' && tokens.getLast().GetText().equals("dict")) {
                             tokens.removeLast();
                             dict = true;
-                            tokens.add(new TextToken("{"));
+                            tokens.add(new TextToken("{", line));
                             start = i + 1;
                             break;
                         }
                         if (s.charAt(i) == '}' && dict) {
-                            tokens.add(new TextToken("}"));
+                            tokens.add(new TextToken("}", line));
                             dict = false;
                             start = i + 1;
                             break;
                         }
                         if (s.charAt(i) == '(')
-                            tokens.add(new StartGroupToken());
+                            tokens.add(new StartGroupToken(line));
                         else if (s.charAt(i) == ')')
-                            tokens.add(new EndGroupToken());
+                            tokens.add(new EndGroupToken(line));
                         else
-                            tokens.add(new SeparatorToken(s.charAt(i)));
+                            tokens.add(new SeparatorToken(s.charAt(i), line));
                         start = i + 1;
                         break;
 
@@ -104,16 +107,16 @@ public class Tokenizer {
                             startedComment = '}';
                             donttokenize = true;
                             if (start != i && enableComments) {
-                                tokens.add(Tools.GenerateToken(s.substring(start, i)));
-                                tokens.add(new SeparatorToken(';'));
+                                tokens.add(Tools.GenerateToken(s.substring(start, i), line));
+                                tokens.add(new SeparatorToken(';', line));
                             }
                             start = i + 2;
                         } else {
                             startedComment = '\n';
                             donttokenize = true;
                             if (start != i && !enableComments) {
-                                tokens.add(Tools.GenerateToken(s.substring(start, i)));
-                                tokens.add(new SeparatorToken(';'));
+                                tokens.add(Tools.GenerateToken(s.substring(start, i), line));
+                                tokens.add(new SeparatorToken(';', line));
                             }
                             start = i;
                         }
@@ -130,7 +133,7 @@ public class Tokenizer {
 
                     case 0: // startedText != ' '
                         if (Tools.StringAt(s, startedText, i)) {
-                            tokens.add(new TextToken(s.substring(start, i + startedText.length())));
+                            tokens.add(new TextToken(s.substring(start, i + startedText.length()), line));
                             start = i + startedText.length();
                             startedText = " ";
                             donttokenize = false;
@@ -139,7 +142,7 @@ public class Tokenizer {
 
                     case 1: // startedPure
                         if (s.charAt(i) == '}') {
-                            tokens.add(new TextToken(s.substring(start, i)));
+                            tokens.add(new TextToken(s.substring(start, i), line));
                             startedPure = false;
                             donttokenize = false;
                             start = i + 1;
@@ -150,23 +153,23 @@ public class Tokenizer {
                         if (s.charAt(i) == '\n') {
                             if (startedComment == '\n') {
                                 if (enableComments) {
-                                    tokens.add(new TextToken(s.substring(start, i)));
-                                    tokens.add(new SeparatorToken(';'));
+                                    tokens.add(new TextToken(s.substring(start, i), line));
+                                    tokens.add(new SeparatorToken(';', line));
                                 }
                                 donttokenize = false;
                                 startedComment = ' ';
                                 start = i + 1;
                             } else {
                                 if (enableComments) {
-                                    tokens.add(new TextToken("#" + s.substring(start, i)));
-                                    tokens.add(new SeparatorToken(';'));
+                                    tokens.add(new TextToken("#" + s.substring(start, i), line));
+                                    tokens.add(new SeparatorToken(';', line));
                                 }
                                 start = i + 1;
                             }
                         } else if (s.charAt(i) == '}') {
                             if (start != i && enableComments) {
-                                tokens.add(new TextToken("#" + s.substring(start, i)));
-                                tokens.add(new SeparatorToken(';'));
+                                tokens.add(new TextToken("#" + s.substring(start, i), line));
+                                tokens.add(new SeparatorToken(';', line));
                             }
                             start = i + 1;
                             donttokenize = false;
@@ -178,12 +181,12 @@ public class Tokenizer {
             i++;
         }
         if(start < i)
-            tokens.add(Tools.GenerateToken(s.substring(start,i)));
+            tokens.add(Tools.GenerateToken(s.substring(start,i), line));
         Token[] t = new Token[tokens.size()];
         return tokens.toArray(t);
     }
 
-    private ADVToken[] ADVTokens(Token[] tokens){
+    private ADVToken[] ADVTokens(Token[] tokens) throws Exception {
         ListCommandToken main = new ListCommandToken("",null);
         LinkedList<ListCommandToken> all = new LinkedList<>();
         all.add(main);
@@ -197,9 +200,9 @@ public class Tokenizer {
         for(int i = 0; i < tokens.length; i++){
             t = tokens[i];
             if(replace.containsKey(t.GetText()))
-                t = Tools.GenerateToken(replace.get(t.GetText()));
+                t = Tools.GenerateToken(replace.get(t.GetText()), t.GetLine());
             if(t.GetText().equals("replace")){
-                replace.put(tokens[i+1].GetText(), tokens[i+2].GetText());
+                replace.put(tokens[i + 1].GetText(), tokens[i + 2].GetText());
                 i += 3;
                 continue;
             }
@@ -241,7 +244,7 @@ public class Tokenizer {
                         current = all.get(all.size()-1);
                     } else if(t.GetText().equals("=")){
                         allcommands.removeLast();
-                        allcommands.add(new SetVarToken(currentcommand, all.get(0).GetIndent()));
+                        allcommands.add(new SetVarToken(currentcommand, all.getLast().GetIndent()));
                         currentcommand = allcommands.getLast();
                     } else {
                         currentcommand.Append(t);
@@ -249,9 +252,9 @@ public class Tokenizer {
                     break;
                 case "Pair":
                     if(t.GetText().equals("++"))
-                        currentcommand.Append(new TextToken("+=1"));
+                        currentcommand.Append(new TextToken("+=1", t.GetLine()));
                     else if(t.GetText().equals("--"))
-                        currentcommand.Append(new TextToken("-=1"));
+                        currentcommand.Append(new TextToken("-=1", t.GetLine()));
                     else
                         currentcommand.Append(t);
                     break;
@@ -265,7 +268,7 @@ public class Tokenizer {
         return main.GetData().toArray(tt);
     }
 
-    private String Translate(ADVToken[] advTokens){
+    private String Translate(ADVToken[] advTokens) throws Exception {
         StringBuilder s = new StringBuilder();
         for(ADVToken t : advTokens) {
                 s.append(t.Translate()).append("\n");
@@ -273,7 +276,7 @@ public class Tokenizer {
         return s.toString();
     }
 
-    private static void Execute(String path, boolean noise){
+    private static void Execute(String path, boolean noise) throws Exception {
         Tokenizer t = new Tokenizer();
         String piecode = Tools.ReadFile(path);
         if(noise) {
@@ -307,7 +310,7 @@ public class Tokenizer {
             Tools.WriteFile(filename + ".py", output);
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception {
         if(args.length > 1){
             for(String s : args) {
                 switch (s.split(Pattern.quote("="))[0]) {

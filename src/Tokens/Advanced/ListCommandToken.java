@@ -23,7 +23,7 @@ public class ListCommandToken extends ADVToken<ADVToken> {
         return result.toString();
     }
 
-    public String TranslateCommands(){
+    public String TranslateCommands() throws Exception {
         StringBuilder s = new StringBuilder();
         for (ADVToken aData : this.data)
             s.append(indent).append(aData.Translate()).append("\n");
@@ -31,7 +31,7 @@ public class ListCommandToken extends ADVToken<ADVToken> {
     }
 
     @Override
-    public String Translate() {
+    public String Translate() throws Exception{
         if(title.GetData().get(0).equals("Script"))
             return Tools.TranslateScript(this);
         else

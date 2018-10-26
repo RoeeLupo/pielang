@@ -9,4 +9,6 @@ public interface BaseToken<T>{
 
     String GetType();
     String GetText();
+
+    int GetLine();
 }
