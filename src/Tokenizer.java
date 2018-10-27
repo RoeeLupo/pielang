@@ -227,7 +227,7 @@ public class Tokenizer {
                         currentcommand = allcommands.getLast();
                     } else if ((t.GetData().equals('{'))) {
                         String ind = current.GetIndent();
-                        if(currentcommand.GetData().get(0).equals("Script") &&
+                        if(currentcommand.GetData().get(0).equals("Scripts.Script") &&
                                 (currentcommand.GetData().get(0).GetText().equals("to") || currentcommand.GetData().get(0).GetText().equals("elto")))
                             ind = ind.substring(0, ind.length()-1);
                         all.add(new ListCommandToken(ind + "\t", (CommandToken) currentcommand));
@@ -310,7 +310,7 @@ public class Tokenizer {
             Tools.WriteFile(filename + ".py", output);
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void Start(String[] args) throws Exception {
         if(args.length > 1){
             for(String s : args) {
                 switch (s.split(Pattern.quote("="))[0]) {

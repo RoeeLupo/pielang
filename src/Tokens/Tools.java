@@ -1,8 +1,7 @@
 package Tokens;
 
-import Tokens.Advanced.CommandToken;
-import Tokens.Advanced.GroupToken;
-import Tokens.Advanced.ListCommandToken;
+import Scripts.Script;
+import Tokens.Advanced.ADVToken;
 import Tokens.Basic.NumToken;
 import Tokens.Basic.ScriptToken;
 import Tokens.Basic.TextToken;
@@ -12,14 +11,19 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Tools {
     //linux
     //private static HashMap<String, LinkedList<String>> types = new HashMap<>();
-    private static String[] commands = {"loop", "compare", "to", "elto", "replace"};
+    private static LinkedList<String> commands = new LinkedList<>();
     private static Character[] ws = {' ', '\t', '\n'};
+    private static LinkedList<Script> scripts = new LinkedList<>();
+
+    public static void AddScript(Script s){
+        Tools.scripts.add(s);
+        Tools.commands.add(s.command);
+    }
 
     public static String ReadFile(String filePath){
         StringBuilder contentBuilder = new StringBuilder();
@@ -77,6 +81,13 @@ public class Tools {
         return false;
     }
 
+    public static boolean in(Object o, LinkedList arr){
+        for(Object obj : arr)
+            if(o.equals(obj))
+                return true;
+        return false;
+    }
+
     public static Token GenerateToken(String text, int line){
         if(in(text, commands))
             return new ScriptToken(text, line);
@@ -87,67 +98,18 @@ public class Tools {
         }
     }
 
-    public static String TranslateScript(ListCommandToken l) throws Exception {
-        String command = l.GetTitle().GetData().get(0).GetText();
-        if(command.equals("loop"))
-            return TranslateLoop(l);
-        else if(command.equals("compare"))
-            return TranslateCompare(l);
-        //can't happen anyway
-        return "error";
-    }
-
-    private static String TranslateLoop(ListCommandToken l) throws Exception {
-        try {
-            StringBuilder s = new StringBuilder();
-            LinkedList<BaseToken> title = (LinkedList<BaseToken>) l.GetTitle().GetData().get(1)/*group*/.GetData(); // all params
-            String name = title.get(0).GetText();
-            StringBuilder from = new StringBuilder(), to = new StringBuilder(), construct = new StringBuilder();
-            int i;
-            for (i = 1; i < title.size() && !title.get(i).GetText().equals(">"); i++)
-                from.append(title.get(i).GetText()).append(" ");
-            i++;
-            for (; i < title.size() && !title.get(i).GetText().equals("|"); i++)
-                to.append(title.get(i).GetText()).append(" ");
-            construct.append(title.get(i + 1).GetText()).append("=").append(title.get(i + 2).GetText());
-            s.append(name).append("=").append(from).append("\n");
-            s.append(l.GetIndent(), 0, l.GetIndent().length() - 1).append("while ").append(name).append("<").append(to).append(": \n");
-            s.append(l.TranslateCommands());
-            s.append(l.GetIndent()).append(name).append(construct);
-            return s.toString();
-        } catch (Exception e){
-            throw new TranslateError("Bad declaration of the loop command in line " + l.GetTitle().GetData().get(0).GetLine()
-                    + ".\nSyntax: loop(name from > to | update){}");
-        }
-    }
-
-    private static String TranslateCompare(ListCommandToken l) throws Exception {
-        try {
-            StringBuilder s = new StringBuilder();
-            String baseVar = ((GroupToken) l.GetTitle().GetData().get(1)).BaseTranslate();
-            String operator = l.GetTitle().GetData().get(2).GetText();
-            ListCommandToken to;
-            to = (ListCommandToken) l.GetData().get(0);
-            s.append("if (").append(baseVar)
-                    .append(operator).append(" ").append(((GroupToken) to.GetTitle().GetData().get(1)).BaseTranslate()).append("):\n");
-            s.append(to.TranslateCommands());
-            String ifstr;
-            for (int i = 1; i < l.GetData().size(); i++) {
-                to = (ListCommandToken) l.GetData().get(i);
-                if (to.GetTitle().GetData().get(0).GetText().equals("elto")) {
-                    ifstr = "elif";
-                } else {
-                    ifstr = "if";
+    public static String TranslateScript(ADVToken script) throws Exception {
+        for(Script s : scripts){
+            if(s.CompareCommand(script)){
+                try {
+                    return s.Translate(script);
                 }
-                s.append(l.GetIndent(), 0, l.GetIndent().length() - 1).append(ifstr).append(" (").append(baseVar)
-                        .append(operator).append(" ").append(((GroupToken) to.GetTitle().GetData().get(1)).BaseTranslate()).append("):\n");
-                s.append(to.TranslateCommands());
+                catch (Exception e) {
+                    throw new TranslateError("ScriptError: " + s.ErrorMessage());
+                }
             }
-            return s.toString();
-        } catch (Exception e){
-            throw new TranslateError("Bad declaration of the compare command in line " + l.GetTitle().GetData().get(0).GetLine()
-                    + ".\nSyntax: compare(name) operator{ to(name1){} elto(name2){} }");
         }
+        return "ScriptError: Command not found";
     }
 
     public static int If(boolean... conditions){

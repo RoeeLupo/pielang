@@ -32,7 +32,7 @@ public class ListCommandToken extends ADVToken<ADVToken> {
 
     @Override
     public String Translate() throws Exception{
-        if(title.GetData().get(0).equals("Script"))
+        if(title.GetData().get(0).equals("Scripts.Script"))
             return Tools.TranslateScript(this);
         else
             return title.Translate() + ":\n" + TranslateCommands();
