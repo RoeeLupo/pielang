@@ -11,7 +11,10 @@ public class ListCommandToken extends ADVToken<ADVToken> {
         super("ListCommandToken");
         this.indent = indent;
         this.title = title;
-        this.command = title.GetData().get(0).GetText();
+        if(title == null)
+            command = "";
+        else
+            this.command = title.GetData().get(0).GetText();
     }
 
     @Override
