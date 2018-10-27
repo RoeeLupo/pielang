@@ -7,7 +7,7 @@ import Tokens.Advanced.ListCommandToken;
 public class CompareScript extends Script {
 
     public CompareScript(){
-        this.command = "compare";
+        super("compare");
     }
 
     @Override
@@ -41,8 +41,4 @@ public class CompareScript extends Script {
         return s.toString();
     }
 
-    @Override
-    public boolean CompareCommand(ADVToken script) {
-        return script.GetName().equals("compare");
-    }
 }

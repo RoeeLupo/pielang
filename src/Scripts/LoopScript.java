@@ -8,7 +8,7 @@ import java.util.LinkedList;
 public class LoopScript extends Script {
 
     public LoopScript(){
-        this.command = "loop";
+        super("loop");
     }
 
     @Override
@@ -37,8 +37,4 @@ public class LoopScript extends Script {
         return s.toString();
     }
 
-    @Override
-    public boolean CompareCommand(ADVToken script) {
-        return script.GetName().equals("loop");
-    }
 }
