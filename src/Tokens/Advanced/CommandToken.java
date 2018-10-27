@@ -21,6 +21,13 @@ public class CommandToken extends ADVToken<BaseToken>  {
     }
 
     @Override
+    public void Append(BaseToken baseToken) {
+        if(data.size() == 0)
+            this.command = baseToken.GetText();
+        super.Append(baseToken);
+    }
+
+    @Override
     public String Translate() {
         StringBuilder result = new StringBuilder();
         for(BaseToken c: data)

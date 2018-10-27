@@ -1,5 +1,6 @@
 package Tokens.Advanced;
 
+import Tokens.BaseToken;
 import Tokens.Tools;
 
 public class ListCommandToken extends ADVToken<ADVToken> {
@@ -10,6 +11,7 @@ public class ListCommandToken extends ADVToken<ADVToken> {
         super("ListCommandToken");
         this.indent = indent;
         this.title = title;
+        this.command = title.GetData().get(0).GetText();
     }
 
     @Override

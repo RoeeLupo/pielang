@@ -43,6 +43,6 @@ public class CompareScript extends Script {
 
     @Override
     public boolean CompareCommand(ADVToken script) {
-        return ((ListCommandToken) script).GetTitle().GetData().get(0).GetText().equals("compare");
+        return script.GetName().equals("compare");
     }
 }
