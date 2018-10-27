@@ -24,7 +24,7 @@ public abstract class Script {
     public abstract String Translate(ADVToken script) throws Exception;
 
     // CompareCommand is called every time the Tokenizer get a ScriptToken and it needs to be translated.
-    // This function should determine whether it can handle the ADVToken received or not.
+    // This function should determine whether your Script can handle the ADVToken received or not.
     // By default the name will compared to the ADVToken name in the function CompareCommand.
     public boolean CompareCommand(ADVToken script){
         return script.GetName().equals(command);
