@@ -22,8 +22,8 @@ java -jar pielang.jar path_to_file/filename.pie noise=true
 ```
 And if you want to help me improve the program, or just look at the source code and run the program from there, go to the *src* folder, and run:
 ```
-javac Tokenizer.java
-java Tokenizer
+javac Program.java
+java Program
 ```
 ## Made by
 Argaman Meir Gez
