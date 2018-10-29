@@ -39,3 +39,5 @@ To start adding new code or manipulating existing one just go through different 
 Argaman Meir Gez
 ## Support
 Any support will be much appreciated :) 
+## License
+This project is licensed under the GNU General Public License v3.0, see the [**LICENSE**](https://github.com/argaman123/pielang/blob/master/LICENSE) file for details
