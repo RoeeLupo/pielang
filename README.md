@@ -20,7 +20,7 @@ In order to watch the process in which the pie program is translating into a Pyt
 ```
 java -jar pielang.jar path_to_file/filename.pie noise=true
 ```
-And if you want to help me improve the program, or just look at the source code and run the program from there, go to the *src* folder, and run:
+If you want to help me improve the program, or just look at the source code and run the program from there, go to the *src* folder, and run:
 ```
 javac Program.java
 java Program
