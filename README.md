@@ -25,6 +25,16 @@ If you want to help me improve the program, or just look at the source code and 
 javac Program.java
 java Program
 ```
+## Contributing
+We love contributors because they make this project even better with their unique talent and skills. If you want to contribute you must know the following this at an intermediate or master level:
+
+- Java (JDK 8)
+- Knowledge of how to use Git
+
+To start contributing, firstly create a fork of this project and clone it to your computer, you can read more about it here: [How to Fork a Repo](https://help.github.com/articles/fork-a-repo/)
+
+To start adding new code or manipulating existing one just go through different folders and files and edit them, once you're done just push the changes to your forked repository and create a new pull request from GitHub, if the code is sensible and works then it is most likely that it'll be accepted but it's upto the developers to accept or deny your pull request for any reason.
+
 ## Made by
 Argaman Meir Gez
 ## Support
